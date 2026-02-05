@@ -1,10 +1,10 @@
 import os
 from azure.ai.inference import ChatCompletionsClient
-from azure.ai.inference.models import SystemMessage, UserMessage
+from azure.ai.inference.models import SystemMessage, UserMessage, AssistantMessage
 from azure.core.credentials import AzureKeyCredential
 
 endpoint = "https://models.github.ai/inference"
-model = "deepseek/DeepSeek-V3-0324"
+model = "gpt-4o-mini"
 token = os.environ["GITHUB_TOKEN"]
 
 client = ChatCompletionsClient(
@@ -12,16 +12,28 @@ client = ChatCompletionsClient(
     credential=AzureKeyCredential(token),
 )
 
-response = client.complete(
-    messages=[
-        SystemMessage("You are a helpful assistant.Always answers in one word"),
-        UserMessage(input("ask me anything")),
-    ],
-    temperature=1.0,
-    top_p=1.0,
-    max_tokens=1000,
-    model=model
-)
+messages = [
+    SystemMessage("You are a helpful assistant. Reply concisely and accurately in Kanglish."),
+]
 
-print(response.choices[0].message.content)
+print("Chatbot started! Type 'exit' to quit.")
+
+while True:
+    user_input = input("You: ")
+    if user_input.lower() in ["exit", "quit"]:
+        break
+
+    messages.append(UserMessage(user_input))
+
+    response = client.complete(
+        messages=messages,
+        temperature=0.3,
+        top_p=0.9,
+        max_tokens=500,
+        model=model
+    )
+
+    assistant_response = response.choices[0].message.content
+    print(f"Assistant: {assistant_response}")
+    messages.append(AssistantMessage(assistant_response))
 
