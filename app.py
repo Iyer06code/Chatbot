@@ -1,11 +1,22 @@
-from ai import get_ai_response
-print("Welcome to AI chatbot")
-print("Chatbot started! Type 'exit' to quit.")
+from flask import Flask
 
-while True:
-    user_input = input("You: ")
-    if user_input.lower() == "exit":
-        break
+app=Flask(__name__)
+
+@app.route('/')
+def index():
+    return 'Hello World!'
+
+if __name__=='__main__':
+    app.run(debug=True)
+
+#from ai import get_ai_response
+#print("Welcome to AI chatbot")
+#print("Chatbot started! Type 'exit' to quit.")
+
+#while True:
+    #user_input = input("You: ")
+    #if user_input.lower() == "exit":
+        #break
     
-    response = get_ai_response(user_input)
-    print(f"AI: {response}")
+    #response = get_ai_response(user_input)
+    #print(f"AI: {response}")
